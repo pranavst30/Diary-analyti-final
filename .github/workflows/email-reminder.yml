@@ -1,27 +1,37 @@
-# .github/workflows/email-reminder.yml
-
-name: Send Daily Email Reminder
-
-on:
-  schedule:
-    - cron: '12 5 * * *'  # 10:42 AM IST (05:12 UTC)
-  workflow_dispatch:     # Allows manual trigger from GitHub UI
-
-jobs:
-  send-email:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run reminder script
-        run: node cron/send-reminder.js
+name: 📧 Daily Email Reminder
+ 
+ on:
+   schedule:
+     - cron: "30 0 * * *"  # 6:00 AM IST daily (12:30 AM UTC)
+   workflow_dispatch:       # Manual trigger option
+     - cron: '30 0 * * *'  # 6:00 AM IST = 12:30 AM UTC
+   workflow_dispatch:  # allows manual run from GitHub
+ 
+ jobs:
+   send-email:
+   send-reminder:
+     runs-on: ubuntu-latest
+ 
+     steps:
+       - name: Checkout code
+       - name: 📥 Checkout code
+         uses: actions/checkout@v3
+ 
+       - name: Set up Node.js
+       - name: 🟢 Setup Node.js
+         uses: actions/setup-node@v3
+         with:
+           node-version: 18
+           node-version: '20'
+ 
+       - name: Install dependencies
+       - name: 📦 Install dependencies
+         run: npm install
+ 
+       - name: Run email reminder script
+       - name: ⚙️ Run email reminder script
+         run: node cron/send-reminder.js
+         env:
+           EMAIL_USER: ${{ secrets.EMAIL_USER }}
+           EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+           DATABASE_URL: ${{ secrets.DATABASE_URL }}

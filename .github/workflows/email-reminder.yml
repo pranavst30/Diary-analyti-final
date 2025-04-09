@@ -1,25 +1,27 @@
-name: 📧 Daily Email Reminder
+# .github/workflows/email-reminder.yml
+
+name: Send Daily Email Reminder
 
 on:
   schedule:
-    - cron: '30 0 * * *'  # 6:00 AM IST = 12:30 AM UTC
-  workflow_dispatch:  # allows manual run from GitHub
+    - cron: '12 5 * * *'  # 10:42 AM IST (05:12 UTC)
+  workflow_dispatch:     # Allows manual trigger from GitHub UI
 
 jobs:
-  send-reminder:
+  send-email:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Checkout code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: 🟢 Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: 18
 
-      - name: 📦 Install dependencies
+      - name: Install dependencies
         run: npm install
 
-      - name: ⚙️ Run email reminder script
+      - name: Run reminder script
         run: node cron/send-reminder.js

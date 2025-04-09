@@ -2,8 +2,8 @@ name: Send Daily Email Reminder
 
 on:
   schedule:
-    - cron: "30 0 * * *"  # 6:00 AM IST = 12:30 AM UTC
-  workflow_dispatch:      # Manual trigger
+    - cron: "30 0 * * *"  # 6:00 AM IST daily (12:30 AM UTC)
+  workflow_dispatch:       # Manual trigger option
 
 jobs:
   send-email:
@@ -21,8 +21,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run email script
-        run: node scripts/send-reminder.js
+      - name: Run email reminder script
+        run: node cron/send-reminder.js
         env:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_PASS: ${{ secrets.EMAIL_PASS }}

@@ -82,27 +82,30 @@ async function sendEmailsToAllUsers() {
   }
 }
 
-// 🔁 Check every 30 seconds between 6:00 and 6:15 AM IST
+// 🔁 Check every 30 seconds between 9:00 AM and 12:01 PM IST
 setInterval(async () => {
   const now = moment().tz("Asia/Kolkata");
   const hour = now.hour();
   const minute = now.minute();
   const today = now.format("YYYY-MM-DD");
 
-  const isInWindow = (hour === 6 && minute >= 0 && minute <= 15);
+  const isInWindow =
+    (hour > 9 && hour < 12) ||                 // 10:00 to 11:59
+    (hour === 9 && minute >= 0) ||             // 9:00 to 9:59
+    (hour === 12 && minute <= 1);              // 12:00 and 12:01
+
   const alreadySentToday = lastSentDate === today;
 
   if (isInWindow && !alreadySentToday) {
-    console.log("⏰ Time matched (between 6:00–6:15 AM IST). Sending emails...");
+    console.log("⏰ Time matched (between 9:00 AM – 12:01 PM IST). Sending emails...");
     await sendEmailsToAllUsers();
     lastSentDate = today;
   } else if (!isInWindow && alreadySentToday) {
-    // Reset the flag after the time window ends
-    if (hour > 6 || (hour === 6 && minute > 15)) {
+    if (hour > 12 || (hour === 12 && minute > 1)) {
       lastSentDate = null;
       console.log("🔄 Time window over, reset for next day.");
     }
   }
-}, 30000);
+}, 30000); // Runs every 30 seconds
 
-console.log("🔁 Email reminder loop is running. Waiting for 6:00–6:15 AM IST...");
+console.log("🔁 Email reminder loop is running. Waiting for 9:00 AM – 12:01 PM IST...");

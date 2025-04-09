@@ -1,0 +1,29 @@
+name: Send Daily Email Reminder
+
+on:
+  schedule:
+    - cron: "30 0 * * *"  # 6:00 AM IST = 12:30 AM UTC
+  workflow_dispatch:      # Manual trigger
+
+jobs:
+  send-email:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run email script
+        run: node scripts/send-reminder.js
+        env:
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}

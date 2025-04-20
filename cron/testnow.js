@@ -16,7 +16,7 @@ const createMailOptions = (toEmail) => ({
   from: "Analytics Diary <pranavtavarej@gmail.com>",
   to: toEmail,
   subject: "📔 Your Analytics Diary is ready for today's entry!",
-  text: `Good morning!
+  text: `Good evening!
 
 It's a fresh start — the perfect time to reflect, plan, and track your progress. Your Analytics Diary is ready for today's entry.
 
@@ -35,7 +35,7 @@ Cheers,
 The Analytics Diary Team
 `,
   html: `
-    <p>Good morning!</p>
+    <p>Good evening!</p>
     <p>It’s a fresh start — the perfect time to reflect, plan, and track your progress. Your Analytics Diary is ready for today’s entry.</p>
 
     <p>🖊 <strong>Start writing now:</strong><br>
@@ -82,7 +82,7 @@ async function sendEmailsToAllUsers() {
   }
 }
 
-// 🔁 Check every 30 seconds between 9:00 AM and 12:01 PM IST
+// 🔁 Check every 30 seconds between 6:00 PM and 9:01 PM IST
 setInterval(async () => {
   const now = moment().tz("Asia/Kolkata");
   const hour = now.hour();
@@ -90,22 +90,22 @@ setInterval(async () => {
   const today = now.format("YYYY-MM-DD");
 
   const isInWindow =
-    (hour > 9 && hour < 12) ||                 // 10:00 to 11:59
-    (hour === 9 && minute >= 0) ||             // 9:00 to 9:59
-    (hour === 12 && minute <= 1);              // 12:00 and 12:01
+    (hour > 18 && hour < 21) ||                 // 19:00 to 20:59
+    (hour === 18 && minute >= 0) ||             // 18:00 to 18:59
+    (hour === 21 && minute <= 1);               // 21:00 and 21:01
 
   const alreadySentToday = lastSentDate === today;
 
   if (isInWindow && !alreadySentToday) {
-    console.log("⏰ Time matched (between 9:00 AM – 12:01 PM IST). Sending emails...");
+    console.log("⏰ Time matched (between 6:00 PM – 9:01 PM IST). Sending emails...");
     await sendEmailsToAllUsers();
     lastSentDate = today;
   } else if (!isInWindow && alreadySentToday) {
-    if (hour > 12 || (hour === 12 && minute > 1)) {
+    if (hour > 21 || (hour === 21 && minute > 1)) {
       lastSentDate = null;
       console.log("🔄 Time window over, reset for next day.");
     }
   }
 }, 30000); // Runs every 30 seconds
 
-console.log("🔁 Email reminder loop is running. Waiting for 9:00 AM – 12:01 PM IST...");
+console.log("🔁 Email reminder loop is running. Waiting for 6:00 PM – 9:01 PM IST...");

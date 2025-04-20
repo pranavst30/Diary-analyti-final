@@ -7,17 +7,25 @@ const prisma = new PrismaClient();
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "pranavtavarej@gmail.com",
-    pass: "achqpvryuhyncpfi", // Hardcoded app password (unsafe for public)
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 });
 
 const createMailOptions = (toEmail) => ({
-  from: "Analytics Diary <pranavtavarej@gmail.com>",
+  from: `Analytics Diary <${process.env.EMAIL_USER}>`,
   to: toEmail,
   subject: "📔 Your Analytics Diary is ready for today's entry!",
-  text: "Your text version here...",
-  html: "<p>Your HTML version here...</p>",
+  text: "Hey there! Don't forget to log your productivity today. 📝",
+  html: `
+    <div style="font-family:sans-serif;">
+      <h2>📔 Your Analytics Diary Reminder</h2>
+      <p>Hi there,</p>
+      <p>This is your daily nudge to write your productivity journal. Just 2 mins!</p>
+      <p><a href="https://yourappurl.com/main/journal/write" style="background:#6366f1;color:white;padding:10px 20px;border-radius:8px;text-decoration:none;">Write Now</a></p>
+      <p style="font-size:12px;color:#555;">— Team Analytics Diary</p>
+    </div>
+  `,
 });
 
 async function sendEmailsToAllUsers() {
@@ -38,7 +46,7 @@ async function sendEmailsToAllUsers() {
   try {
     const users = await prisma.user.findMany();
 
-    if (users.length === 0) {
+    if (!users || users.length === 0) {
       console.log("⚠ No users found in the database.");
       return;
     }
@@ -52,6 +60,8 @@ async function sendEmailsToAllUsers() {
     console.log("✅ All emails sent.");
   } catch (error) {
     console.error("❌ Error sending emails:", error);
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
